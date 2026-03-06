@@ -15,28 +15,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Клонируем репозиторий
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      # 2️⃣ Устанавливаем Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
+      # 3️⃣ Устанавливаем зависимости
       - name: Install dependencies
         run: npm install
 
-      # Build с помощью npx, чтобы не было Permission denied и shell-скрипт не запускался через Node
+      # 4️⃣ Сборка проекта
       - name: Build Astro site
         run: npm run build
 
-      # Загружаем артефакт для деплоя
+      # 5️⃣ Загружаем dist как артефакт для деплоя
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
           path: ./dist
 
+      # 6️⃣ Деплой на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:

@@ -2,11 +2,11 @@
   "name": "the-dispatch",
   "type": "module",
   "version": "1.0.0",
-"scripts": {
-  "dev": "npx astro dev",
-  "build": "npx astro build",
-  "preview": "npx astro preview"
-}, 
+  "scripts": {
+    "dev": "npx astro dev",
+    "build": "npx astro build",
+    "preview": "npx astro preview"
+  },
   "dependencies": {
     "astro": "^4.0.0"
   }
