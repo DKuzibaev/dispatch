@@ -1,4 +1,4 @@
-name: Deploy Astro to GitHub Pages
+name: Build and Deploy Astro
 
 on:
   push:
@@ -11,24 +11,26 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
 
+      - name: Make Astro executable (если нужно)
+        run: chmod +x ./node_modules/.bin/astro
+
       - name: Build site
-        run: npm run build
+        run: npm run build   # или npx astro build
 
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
