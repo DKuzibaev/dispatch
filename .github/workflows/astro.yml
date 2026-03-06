@@ -15,32 +15,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Клонируем репозиторий
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2️⃣ Устанавливаем Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
-      # 3️⃣ Устанавливаем зависимости
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Собираем проект Astro
-      - name: Build site
-        run: npm run build   # или npx astro build
+      # ⚡ Решаем Permission denied
+      - name: Make Astro executable
+        run: chmod +x ./node_modules/.bin/astro
 
-      # 5️⃣ Загружаем папку dist как артефакт
+      - name: Build Astro site
+        run: npm run build   # теперь работает без ошибок
+
+      # Загружаем артефакт для deploy-pages
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
           path: ./dist
 
-      # 6️⃣ Деплой на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
