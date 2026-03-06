@@ -25,22 +25,26 @@ jobs:
         with:
           node-version: "20"
 
-      # 3️⃣ Устанавливаем зависимости
+      # 3️⃣ Устанавливаем Astro глобально
+      - name: Install Astro globally
+        run: npm install -g astro
+
+      # 4️⃣ Устанавливаем зависимости проекта
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Сборка проекта
+      # 5️⃣ Сборка проекта
       - name: Build Astro site
-        run: npm run build
+        run: astro build
 
-      # 5️⃣ Загружаем dist как артефакт для деплоя
+      # 6️⃣ Загружаем dist как артефакт
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
           path: ./dist
 
-      # 6️⃣ Деплой на GitHub Pages
+      # 7️⃣ Деплой на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
