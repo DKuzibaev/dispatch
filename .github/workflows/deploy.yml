@@ -1,31 +1,42 @@
-name: Build and Deploy Astro
+name: Deploy Astro to GitHub Pages
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    branches:
+      - main  # или твоя основная ветка
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # 1. Клонируем репозиторий
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Устанавливаем Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: "20"
-      - run: npm install
-      - run: npm install -g astro
-      - run: astro build
-      - uses: actions/upload-artifact@v4
+          node-version: 20
+          cache: 'npm'
+
+      # 3. Устанавливаем зависимости
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Синхронизируем коллекции контента
+      - name: Sync Astro content
+        run: npx astro sync
+
+      # 5. Собираем сайт
+      - name: Build Astro site
+        run: npx astro build
+
+      # 6. Деплой на GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
         with:
-          name: github-pages
-          path: ./dist
-      - uses: actions/deploy-pages@v4
-        with:
-          artifact_name: github-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          # Это автоматически создаст gh-pages ветку и зальет туда dist
