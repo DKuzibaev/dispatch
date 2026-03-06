@@ -1,9 +1,8 @@
-name: Astro Build & Deploy
+name: Build Astro
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -11,25 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Клонируем репозиторий
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2. Устанавливаем Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # или ваша версия Node.js
+          node-version: '20'
 
-      # 3. Устанавливаем зависимости
       - name: Install dependencies
         run: npm install
 
-      # 4. Сборка проекта Astro
-      - name: Build Astro project
-        run: npm run build
+      - name: Make Astro executable
+        run: chmod +x ./node_modules/.bin/astro
 
-      # 5. (Опционально) Предпросмотр сборки
-      - name: Preview build
-        run: npm run preview &
-        shell: bash
+      - name: Build project
+        run: npm run build
