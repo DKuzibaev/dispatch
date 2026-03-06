@@ -1,0 +1,225 @@
+---
+export interface Props {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  author: string;
+  authorSlug: string;
+  date: string;
+  readTime: number;
+  image?: string;
+  featured?: boolean;
+  size?: "default" | "large" | "small" | "horizontal";
+}
+
+const {
+  slug,
+  title,
+  excerpt,
+  category,
+  author,
+  authorSlug,
+  date,
+  readTime,
+  image,
+  featured = false,
+  size = "default",
+} = Astro.props;
+
+const formattedDate = new Date(date).toLocaleDateString("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+---
+
+<article
+  class={`article-card article-card--${size} ${featured ? "article-card--featured" : ""} fade-up`}
+>
+  {
+    image && (
+      <a href={`/article/${slug}`} class="card-image-wrap">
+        <img src={image} alt={title} class="card-image" loading="lazy" />
+        <span class="card-category-badge">
+          <span class="category-badge">{category}</span>
+        </span>
+      </a>
+    )
+  }
+  <div class="card-body">
+    {
+      !image && (
+        <a
+          href={`/category/${category.toLowerCase()}`}
+          class="category-badge card-cat"
+        >
+          {category}
+        </a>
+      )
+    }
+    <h2 class="card-title">
+      <a href={`/article/${slug}`}>{title}</a>
+    </h2>
+    {size !== "small" && <p class="card-excerpt">{excerpt}</p>}
+    <div class="card-meta meta">
+      <a href={`/author/${authorSlug}`} class="meta-author">{author}</a>
+      <span class="meta-dot">·</span>
+      <time datetime={date}>{formattedDate}</time>
+      <span class="meta-dot">·</span>
+      <span>{readTime} min read</span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .article-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border-light);
+    overflow: hidden;
+    transition:
+      box-shadow 0.25s,
+      transform 0.25s;
+  }
+  .article-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  /* Image */
+  .card-image-wrap {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    background: var(--bg2);
+  }
+  .article-card--large .card-image-wrap {
+    aspect-ratio: 3/2;
+  }
+  .article-card--small .card-image-wrap {
+    aspect-ratio: 4/3;
+  }
+  .article-card--horizontal {
+    flex-direction: row;
+  }
+  .article-card--horizontal .card-image-wrap {
+    aspect-ratio: 1/1;
+    width: 160px;
+    min-width: 160px;
+  }
+
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .article-card:hover .card-image {
+    transform: scale(1.03);
+  }
+
+  .card-category-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--bg);
+    padding: 4px 8px;
+  }
+
+  /* Body */
+  .card-body {
+    padding: 20px 20px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .article-card--large .card-body {
+    padding: 24px;
+    gap: 14px;
+  }
+  .article-card--small .card-body {
+    padding: 16px;
+    gap: 8px;
+  }
+  .article-card--horizontal .card-body {
+    padding: 16px 20px;
+    justify-content: center;
+  }
+
+  .card-cat {
+    margin-bottom: 2px;
+  }
+
+  .card-title {
+    font-family: var(--serif);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    font-size: 1.1rem;
+  }
+  .article-card--large .card-title {
+    font-size: 1.5rem;
+  }
+  .article-card--small .card-title {
+    font-size: 0.95rem;
+  }
+  .article-card--horizontal .card-title {
+    font-size: 1rem;
+  }
+
+  .card-title a {
+    text-decoration: none;
+    color: var(--text);
+  }
+  .card-title a:hover {
+    color: var(--accent);
+  }
+
+  .card-excerpt {
+    font-size: 0.85rem;
+    color: var(--text-2);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .article-card--large .card-excerpt {
+    -webkit-line-clamp: 4;
+    font-size: 0.95rem;
+  }
+
+  .card-meta {
+    margin-top: auto;
+    font-size: 10px;
+  }
+  .meta-author {
+    text-decoration: none;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+  .meta-author:hover {
+    color: var(--accent);
+  }
+
+  /* Featured */
+  .article-card--featured {
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+
+  @media (max-width: 600px) {
+    .article-card--horizontal {
+      flex-direction: column;
+    }
+    .article-card--horizontal .card-image-wrap {
+      width: 100%;
+      aspect-ratio: 16/9;
+    }
+  }
+</style>

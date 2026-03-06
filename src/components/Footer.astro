@@ -1,0 +1,157 @@
+---
+
+---
+
+<footer class="site-footer">
+  <hr class="divider" />
+  <div class="footer-top">
+    <div class="container footer-top-inner">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">The Dispatch</a>
+        <p class="footer-tagline">
+          Original reporting, analysis, and commentary from independent writers
+          around the world.
+        </p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <div class="footer-col-title">Sections</div>
+          <a href="/category/world">World</a>
+          <a href="/category/technology">Technology</a>
+          <a href="/category/business">Business</a>
+          <a href="/category/science">Science</a>
+          <a href="/category/culture">Culture</a>
+          <a href="/category/opinion">Opinion</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Company</div>
+          <a href="/about">About Us</a>
+          <a href="/writers">Our Writers</a>
+          <a href="/advertise">Advertise</a>
+          <a href="/contact">Contact</a>
+          <a href="/newsletter">Newsletter</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Follow</div>
+          <a href="#">Twitter / X</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">RSS Feed</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="divider" />
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <span>© 2025 The Dispatch. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/cookies">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 80px;
+    background: var(--bg);
+  }
+  .footer-top {
+    padding: 60px 0;
+  }
+  .footer-top-inner {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 80px;
+  }
+  .footer-logo {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+    margin-bottom: 16px;
+  }
+  .footer-tagline {
+    font-size: 14px;
+    color: var(--text-3);
+    line-height: 1.7;
+    max-width: 240px;
+  }
+  .footer-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  .footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .footer-col-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 4px;
+  }
+  .footer-col a {
+    font-size: 14px;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover {
+    color: var(--accent);
+  }
+  .footer-bottom {
+    padding: 20px 0;
+  }
+  .footer-bottom-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-bottom-inner span {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .footer-legal {
+    display: flex;
+    gap: 20px;
+  }
+  .footer-legal a {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-legal a:hover {
+    color: var(--text);
+  }
+  @media (max-width: 900px) {
+    .footer-top-inner {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .footer-cols {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 600px) {
+    .footer-cols {
+      grid-template-columns: 1fr 1fr;
+    }
+    .footer-bottom-inner {
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+  }
+</style>

@@ -1,0 +1,412 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+// Build search index at build time — passed to client as JSON
+const allArticles = await getCollection("articles");
+const searchIndex = allArticles.map((a) => ({
+  slug: a.slug,
+  title: a.data.title,
+  excerpt: a.data.excerpt,
+  category: a.data.category,
+  author: a.data.author,
+  authorSlug: a.data.authorSlug,
+  date: a.data.date.toISOString(),
+  readTime: a.data.readTime,
+  image: a.data.image,
+  tags: a.data.tags,
+}));
+
+const categories = [
+  "World",
+  "Technology",
+  "Business",
+  "Science",
+  "Culture",
+  "Opinion",
+];
+const trending = ["AI", "Climate", "Economy", "Science", "Housing", "Quantum"];
+---
+
+<Layout title="Search — The Dispatch">
+  <Header />
+  <main>
+    <div class="search-header">
+      <div class="container-narrow">
+        <div class="search-label">Search</div>
+        <div class="search-page-form">
+          <input
+            type="text"
+            id="search-input"
+            class="search-page-input"
+            placeholder="Search articles, authors, topics..."
+            autocomplete="off"
+            autofocus
+          />
+          <button type="button" class="search-page-btn" id="search-btn"
+            >Search</button
+          >
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="search-results-wrap">
+      <div class="container">
+        <!-- State: empty (no query yet) -->
+        <div id="state-empty" class="search-prompt">
+          <p class="search-prompt-text">What are you looking for?</p>
+          <div class="trending-label">Trending Topics</div>
+          <div class="trending-tags">
+            {
+              trending.map((t) => (
+                <button class="tag trending-tag" data-query={t}>
+                  {t}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <!-- State: no results -->
+        <div id="state-noresults" class="no-results" style="display:none">
+          <div class="no-results-icon">◆</div>
+          <h2>No results found</h2>
+          <p>Try different keywords or browse our sections below.</p>
+          <div class="no-results-cats">
+            {
+              categories.map((cat) => (
+                <a href={`/category/${cat.toLowerCase()}`} class="tag">
+                  {cat}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <!-- State: results -->
+        <div id="state-results" style="display:none">
+          <div class="results-meta">
+            <span id="results-count" class="results-count"></span>
+            <span id="results-query" class="results-query"></span>
+          </div>
+          <div id="results-grid" class="results-grid"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<!-- Inject search index as JSON -->
+<script is:inline define:vars={{ searchIndex }}>
+  window.__SEARCH_INDEX__ = searchIndex;
+</script>
+
+<script is:inline>
+  const input = document.getElementById("search-input");
+  const stateEmpty = document.getElementById("state-empty");
+  const stateNoResults = document.getElementById("state-noresults");
+  const stateResults = document.getElementById("state-results");
+  const resultsGrid = document.getElementById("results-grid");
+  const resultsCount = document.getElementById("results-count");
+  const resultsQuery = document.getElementById("results-query");
+
+  function cardHTML(a) {
+    const date = new Date(a.date).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    return `
+    <article class="result-card">
+      <a href="/article/${a.slug}" class="result-image-link">
+        <img src="${a.image}" alt="${a.title}" class="result-image" loading="lazy" />
+      </a>
+      <div class="result-body">
+        <a href="/category/${a.category.toLowerCase()}" class="category-badge">${a.category}</a>
+        <h2 class="result-title"><a href="/article/${a.slug}">${a.title}</a></h2>
+        <p class="result-excerpt">${a.excerpt}</p>
+        <div class="meta">
+          <a href="/author/${a.authorSlug}" class="meta-author">${a.author}</a>
+          <span class="meta-dot">·</span>
+          <time>${date}</time>
+          <span class="meta-dot">·</span>
+          <span>${a.readTime} min read</span>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function doSearch(q) {
+    q = q.trim();
+    if (!q) {
+      stateEmpty.style.display = "block";
+      stateNoResults.style.display = "none";
+      stateResults.style.display = "none";
+      return;
+    }
+
+    const lower = q.toLowerCase();
+    const results = window.__SEARCH_INDEX__.filter(
+      (a) =>
+        a.title.toLowerCase().includes(lower) ||
+        a.excerpt.toLowerCase().includes(lower) ||
+        a.category.toLowerCase().includes(lower) ||
+        a.author.toLowerCase().includes(lower) ||
+        a.tags.some((t) => t.toLowerCase().includes(lower)),
+    );
+
+    // Update URL without reload
+    const url = new URL(window.location);
+    url.searchParams.set("q", q);
+    window.history.replaceState({}, "", url);
+
+    stateEmpty.style.display = "none";
+
+    if (results.length === 0) {
+      stateNoResults.style.display = "block";
+      stateResults.style.display = "none";
+      return;
+    }
+
+    stateNoResults.style.display = "none";
+    stateResults.style.display = "block";
+    resultsCount.textContent = `${results.length} result${results.length !== 1 ? "s" : ""}`;
+    resultsQuery.textContent = ` for "${q}"`;
+    resultsGrid.innerHTML = results.map(cardHTML).join("");
+  }
+
+  // Input handler — live search
+  input.addEventListener("input", () => doSearch(input.value));
+
+  // Enter key
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") doSearch(input.value);
+  });
+
+  // Search button
+  document
+    .getElementById("search-btn")
+    .addEventListener("click", () => doSearch(input.value));
+
+  // Trending tag buttons
+  document.querySelectorAll(".trending-tag").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      input.value = btn.dataset.query;
+      doSearch(btn.dataset.query);
+      input.focus();
+    });
+  });
+
+  // On load — check URL for ?q= param
+  const params = new URLSearchParams(window.location.search);
+  const initialQuery = params.get("q") || "";
+  if (initialQuery) {
+    input.value = initialQuery;
+    doSearch(initialQuery);
+  }
+</script>
+
+<style>
+  .container-narrow {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .search-header {
+    padding: 48px 0 36px;
+  }
+  .search-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 20px;
+  }
+  .search-page-form {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--text);
+  }
+  .search-page-input {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 12px 0;
+    font-family: var(--serif);
+    font-size: clamp(20px, 3vw, 32px);
+    color: var(--text);
+    outline: none;
+  }
+  .search-page-input::placeholder {
+    color: var(--text-3);
+  }
+  .search-page-btn {
+    background: none;
+    border: none;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    cursor: pointer;
+    padding: 0 0 0 20px;
+    transition: color 0.2s;
+  }
+  .search-page-btn:hover {
+    color: var(--accent-dark);
+  }
+  .search-results-wrap {
+    padding: 48px 0 80px;
+  }
+  .results-meta {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+    color: var(--text-2);
+  }
+  .results-count {
+    font-family: var(--mono);
+    font-weight: 500;
+    color: var(--text);
+  }
+  .results-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border-light);
+  }
+
+  /* Result card */
+  .result-card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    background: var(--surface);
+    gap: 0;
+    transition: box-shadow 0.2s;
+  }
+  .result-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+  .result-image-link {
+    display: block;
+    overflow: hidden;
+  }
+  .result-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .result-card:hover .result-image {
+    transform: scale(1.04);
+  }
+  .result-body {
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .result-title {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .result-title a {
+    text-decoration: none;
+    color: var(--text);
+  }
+  .result-title a:hover {
+    color: var(--accent);
+  }
+  .result-excerpt {
+    font-size: 0.85rem;
+    color: var(--text-2);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .meta-author {
+    text-decoration: none;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+  .meta-author:hover {
+    color: var(--accent);
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 80px 0;
+  }
+  .no-results-icon {
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    margin-bottom: 24px;
+  }
+  .no-results h2 {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+  .no-results p {
+    color: var(--text-2);
+    margin-bottom: 28px;
+  }
+  .no-results-cats {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .search-prompt {
+    padding: 60px 0;
+  }
+  .search-prompt-text {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    color: var(--text-2);
+    margin-bottom: 32px;
+  }
+  .trending-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 16px;
+  }
+  .trending-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .trending-tag {
+    cursor: pointer;
+    background: none;
+  }
+
+  @media (max-width: 768px) {
+    .container-narrow {
+      padding: 0 20px;
+    }
+    .result-card {
+      grid-template-columns: 1fr;
+    }
+    .result-image-link {
+      aspect-ratio: 16/9;
+      max-height: 200px;
+    }
+  }
+</style>

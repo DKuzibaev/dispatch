@@ -1,0 +1,365 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const packages = [
+  {
+    name: "Newsletter Sponsor",
+    price: "From $800",
+    period: "per edition",
+    features: [
+      "Dedicated sponsor slot in chosen newsletter",
+      "Logo + 100-word description",
+      "Link to your website or landing page",
+      "Reach: 15,000–40,000 engaged readers",
+      "Performance report after campaign",
+    ],
+  },
+  {
+    name: "Site Takeover",
+    price: "From $2,400",
+    period: "per week",
+    features: [
+      "Banner placement across all pages",
+      "Branded content article (written by our team)",
+      "Social promotion (Twitter/LinkedIn)",
+      "Reach: 200,000+ monthly visitors",
+      "Detailed analytics report",
+    ],
+    featured: true,
+  },
+  {
+    name: "Custom Campaign",
+    price: "Let's talk",
+    period: "custom pricing",
+    features: [
+      "Tailored to your goals and audience",
+      "Multi-format and multi-channel options",
+      "Branded editorial content",
+      "Event sponsorship available",
+      "Dedicated account manager",
+    ],
+  },
+];
+
+const stats = [
+  { value: "200k+", label: "Monthly unique visitors" },
+  { value: "40k+", label: "Newsletter subscribers" },
+  { value: "6:42", label: "Avg. time on site" },
+  { value: "68%", label: "Return visitors" },
+];
+---
+
+<Layout
+  title="Advertise — The Dispatch"
+  description="Reach an engaged, educated audience through The Dispatch advertising partnerships."
+>
+  <Header />
+  <main>
+    <div class="page-header">
+      <div class="container-narrow">
+        <div class="page-label fade-up">Advertise</div>
+        <h1 class="page-title fade-up">
+          Reach readers who<br />actually read.
+        </h1>
+        <p class="page-sub fade-up">
+          The Dispatch audience is educated, engaged, and influential. They
+          subscribe because they care about the world — and they pay attention
+          to what we recommend.
+        </p>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Stats -->
+    <div class="stats-bar fade-up">
+      <div class="container">
+        <div class="stats-grid">
+          {
+            stats.map((s) => (
+              <div class="stat-item">
+                <div class="stat-value">{s.value}</div>
+                <div class="stat-label">{s.label}</div>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Packages -->
+    <section class="packages-section">
+      <div class="container">
+        <div class="section-label fade-up">Advertising packages</div>
+        <div class="packages-grid">
+          {
+            packages.map((pkg) => (
+              <div
+                class={`package-card fade-up ${pkg.featured ? "package-card--featured" : ""}`}
+              >
+                {pkg.featured && (
+                  <div class="pkg-featured-label">Most Popular</div>
+                )}
+                <div class="pkg-name">{pkg.name}</div>
+                <div class="pkg-price">
+                  <span class="pkg-price-value">{pkg.price}</span>
+                  <span class="pkg-price-period">{pkg.period}</span>
+                </div>
+                <ul class="pkg-features">
+                  {pkg.features.map((f) => (
+                    <li class="pkg-feature">
+                      <span class="pkg-check">→</span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <a href="/contact" class="pkg-cta">
+                  Get in touch
+                </a>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Editorial integrity note -->
+    <div class="integrity-note">
+      <div class="container-narrow">
+        <div class="integrity-inner fade-up">
+          <div class="integrity-icon">◆</div>
+          <div>
+            <div class="integrity-title">
+              Our editorial independence is non-negotiable
+            </div>
+            <p class="integrity-text">
+              Advertising partners have no influence over our editorial content.
+              All sponsored content is clearly labeled. We decline advertising
+              from categories that conflict with our values, including gambling,
+              tobacco, and political campaigns.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .container-narrow {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .page-header {
+    padding: 64px 0 48px;
+  }
+  .page-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 20px;
+  }
+  .page-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  .page-sub {
+    font-size: 1rem;
+    color: var(--text-2);
+    line-height: 1.65;
+    max-width: 560px;
+  }
+
+  .stats-bar {
+    padding: 40px 0;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border-light);
+  }
+  .stat-item {
+    background: var(--surface);
+    padding: 32px;
+    text-align: center;
+  }
+  .stat-value {
+    font-family: var(--serif);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  .packages-section {
+    padding: 60px 0;
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 32px;
+  }
+  .packages-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border-light);
+  }
+
+  .package-card {
+    background: var(--surface);
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+  }
+  .package-card--featured {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent);
+  }
+  .pkg-featured-label {
+    position: absolute;
+    top: -1px;
+    right: 24px;
+    background: var(--accent);
+    color: white;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+  }
+  .pkg-name {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .pkg-price {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .pkg-price-value {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .pkg-price-period {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .pkg-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+  .pkg-feature {
+    display: flex;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+  .pkg-check {
+    color: var(--accent);
+    flex-shrink: 0;
+    font-family: var(--mono);
+  }
+  .pkg-cta {
+    display: block;
+    text-align: center;
+    background: var(--text);
+    color: var(--bg);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 13px;
+    text-decoration: none;
+    transition: all 0.2s;
+    margin-top: auto;
+  }
+  .pkg-cta:hover {
+    background: var(--accent);
+  }
+  .package-card--featured .pkg-cta {
+    background: var(--accent);
+  }
+  .package-card--featured .pkg-cta:hover {
+    background: var(--accent-dark);
+  }
+
+  .integrity-note {
+    padding: 48px 0 80px;
+  }
+  .integrity-inner {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 32px;
+    background: var(--bg2);
+    border: 1px solid var(--border-light);
+  }
+  .integrity-icon {
+    font-size: 12px;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .integrity-title {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .integrity-text {
+    font-size: 0.85rem;
+    color: var(--text-2);
+    line-height: 1.65;
+  }
+
+  @media (max-width: 900px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .packages-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 768px) {
+    .container-narrow {
+      padding: 0 20px;
+    }
+  }
+</style>

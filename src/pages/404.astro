@@ -1,0 +1,97 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="Page Not Found — The Dispatch">
+  <Header />
+  <main>
+    <div class="not-found">
+      <div class="container-narrow">
+        <div class="nf-code fade-up">404</div>
+        <h1 class="nf-title fade-up">This page has gone missing.</h1>
+        <p class="nf-sub fade-up">
+          The article may have been moved, the URL may be incorrect, or this
+          page no longer exists.
+        </p>
+        <div class="nf-actions fade-up">
+          <a href="/" class="btn-primary">← Back to homepage</a>
+          <a href="/search" class="btn-secondary">Search articles</a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .container-narrow {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .not-found {
+    padding: 80px 0 120px;
+    text-align: center;
+  }
+  .nf-code {
+    font-family: var(--serif);
+    font-size: clamp(80px, 15vw, 160px);
+    font-weight: 700;
+    color: var(--border);
+    line-height: 1;
+    margin-bottom: 24px;
+    letter-spacing: -0.04em;
+  }
+  .nf-title {
+    font-family: var(--serif);
+    font-size: clamp(24px, 4vw, 40px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .nf-sub {
+    font-size: 1rem;
+    color: var(--text-2);
+    margin-bottom: 40px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .nf-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover {
+    background: var(--accent-dark);
+  }
+  .btn-secondary {
+    background: none;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 13px 28px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  .btn-secondary:hover {
+    border-color: var(--text);
+  }
+</style>

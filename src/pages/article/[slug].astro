@@ -1,0 +1,180 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map(article => ({
+    params: { slug: article.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const article = await getEntry('articles', slug!);
+if (!article) return Astro.redirect('/404');
+
+const { Content } = await article.render();
+
+const allArticles = await getCollection('articles');
+const related = allArticles
+  .filter(a => a.slug !== slug && a.data.category === article.data.category)
+  .slice(0, 3);
+
+const formattedDate = article.data.date.toLocaleDateString('en-US', {
+  weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+});
+---
+
+<Layout title={`${article.data.title} — The Dispatch`} description={article.data.excerpt}>
+  <Header />
+  <main>
+    <div class="article-header">
+      <div class="container-narrow">
+        <div class="article-header-meta fade-up">
+          <a href={`/category/${article.data.category.toLowerCase()}`} class="category-badge">{article.data.category}</a>
+          <span style="color:var(--border)">·</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--text-3)">{article.data.readTime} min read</span>
+        </div>
+        <h1 class="article-title fade-up">{article.data.title}</h1>
+        <p class="article-dek fade-up">{article.data.excerpt}</p>
+        <div class="article-byline fade-up">
+          <img src={article.data.authorAvatar} alt={article.data.author} class="byline-avatar" />
+          <div class="byline-info">
+            <a href={`/author/${article.data.authorSlug}`} class="byline-name">{article.data.author}</a>
+            <time class="byline-date">{formattedDate}</time>
+          </div>
+          <button class="share-btn" id="share-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-hero-image fade-up">
+      <div class="container-narrow">
+        <figure class="article-figure">
+          <img src={article.data.image} alt={article.data.title} class="article-img" />
+          <figcaption class="article-caption">Photo: Unsplash</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="article-layout">
+      <div class="container-narrow">
+        <div class="article-body fade-up">
+          <Content />
+        </div>
+
+        <div class="article-tags fade-up">
+          {article.data.tags.map(tag => (
+            <a href={`/search?q=${tag}`} class="tag">{tag}</a>
+          ))}
+        </div>
+
+        <hr class="divider" style="margin: 40px 0;" />
+
+        <div class="author-bio fade-up">
+          <img src={article.data.authorAvatar} alt={article.data.author} class="author-bio-avatar" />
+          <div>
+            <a href={`/author/${article.data.authorSlug}`} class="author-bio-name">{article.data.author}</a>
+            <p class="author-bio-text">{article.data.authorBio}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {related.length > 0 && (
+      <section class="related-section">
+        <div class="container">
+          <div class="section-header-row">
+            <div class="section-label-lg">More from {article.data.category}</div>
+            <a href={`/category/${article.data.category.toLowerCase()}`} class="view-all">See all →</a>
+          </div>
+          <div class="related-grid">
+            {related.map(a => (
+              <ArticleCard
+                slug={a.slug}
+                title={a.data.title}
+                excerpt={a.data.excerpt}
+                category={a.data.category}
+                author={a.data.author}
+                authorSlug={a.data.authorSlug}
+                date={a.data.date.toISOString()}
+                readTime={a.data.readTime}
+                image={a.data.image}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </main>
+  <Footer />
+</Layout>
+
+<script is:inline>
+const shareBtn = document.getElementById('share-btn');
+if (shareBtn) {
+  shareBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      shareBtn.textContent = '✓ Copied!';
+      setTimeout(() => { shareBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share'; }, 2000);
+    });
+  });
+}
+const bar = document.createElement('div');
+bar.style.cssText = 'position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:9999;transition:width .1s;width:0';
+document.body.appendChild(bar);
+window.addEventListener('scroll', () => {
+  bar.style.width = (scrollY / (document.body.scrollHeight - innerHeight) * 100) + '%';
+}, { passive: true });
+</script>
+
+<style>
+.container-narrow{max-width:720px;margin:0 auto;padding:0 32px}
+.article-header{padding:48px 0 32px}
+.article-header-meta{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.article-title{font-family:var(--serif);font-size:clamp(28px,4vw,52px);font-weight:700;line-height:1.1;letter-spacing:-.025em;margin-bottom:20px}
+.article-dek{font-size:1.15rem;color:var(--text-2);line-height:1.65;margin-bottom:28px;font-weight:300;font-style:italic}
+.article-byline{display:flex;align-items:center;gap:14px;padding:20px 0;border-top:1px solid var(--border-light);border-bottom:1px solid var(--border-light)}
+.byline-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.byline-info{flex:1;display:flex;flex-direction:column;gap:3px}
+.byline-name{font-family:var(--serif);font-size:.95rem;font-weight:600;text-decoration:none;color:var(--text)}
+.byline-name:hover{color:var(--accent)}
+.byline-date{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:.04em}
+.share-btn{display:flex;align-items:center;gap:6px;background:none;border:1px solid var(--border);padding:7px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-2);cursor:pointer;transition:all .2s}
+.share-btn:hover{border-color:var(--accent);color:var(--accent)}
+.article-hero-image{margin-bottom:48px}
+.article-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.article-caption{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:.06em;padding:10px 0 0;text-align:right}
+.article-layout{margin-bottom:60px}
+.article-body{font-size:1.1rem;line-height:1.85;color:var(--text)}
+.article-body :global(p){margin-bottom:1.6em}
+.article-body :global(h2){font-family:var(--serif);font-size:1.5rem;font-weight:700;letter-spacing:-.01em;margin:2em 0 .8em;padding-bottom:.5em;border-bottom:1px solid var(--border-light)}
+.article-body :global(h3){font-family:var(--serif);font-size:1.2rem;font-weight:600;margin:1.8em 0 .6em}
+.article-body :global(blockquote){border-left:3px solid var(--accent);margin:2em 0;padding:.5em 0 .5em 1.5em;color:var(--text-2);font-style:italic;font-size:1.05rem}
+.article-body :global(ul),.article-body :global(ol){margin:1.2em 0 1.6em 1.5em}
+.article-body :global(li){margin-bottom:.5em}
+.article-body :global(strong){font-weight:600;color:var(--text)}
+.article-body :global(p:first-child::first-letter){font-family:var(--serif);font-size:4.5em;font-weight:700;float:left;line-height:.75;margin:.05em .08em 0 0;color:var(--accent)}
+.article-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:40px}
+.author-bio{display:flex;gap:20px;align-items:flex-start;padding:28px;background:var(--bg2);border:1px solid var(--border-light)}
+.author-bio-avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.author-bio-name{font-family:var(--serif);font-size:1rem;font-weight:600;text-decoration:none;color:var(--text);display:block;margin-bottom:8px}
+.author-bio-name:hover{color:var(--accent)}
+.author-bio-text{font-size:.85rem;color:var(--text-2);line-height:1.65}
+.related-section{padding:60px 0;background:var(--bg2);border-top:1px solid var(--border-light)}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border-light)}
+.section-header-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:32px;padding-bottom:12px;border-bottom:2px solid var(--text)}
+.section-label-lg{font-family:var(--serif);font-size:1.3rem;font-weight:700}
+.view-all{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+@media(max-width:768px){
+  .container-narrow{padding:0 20px}
+  .related-grid{grid-template-columns:1fr}
+  .article-body :global(p:first-child::first-letter){font-size:3.5em}
+}
+</style>

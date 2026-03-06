@@ -1,0 +1,204 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout
+  title="About Us — The Dispatch"
+  description="The Dispatch is an independent news publication committed to original reporting and honest analysis."
+>
+  <Header />
+  <main>
+    <div class="page-header">
+      <div class="container-narrow">
+        <div class="page-label fade-up">About</div>
+        <h1 class="page-title fade-up">
+          Independent journalism<br />that doesn't ask permission.
+        </h1>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="page-body">
+      <div class="container-narrow">
+        <div class="lead fade-up">
+          The Dispatch was founded in 2022 on a simple premise: that the world
+          needs more journalism that is accountable to readers, not advertisers,
+          political sponsors, or engagement algorithms.
+        </div>
+
+        <div class="prose fade-up">
+          <p>
+            We cover the stories that matter — geopolitics, technology, science,
+            business, and culture — with the depth and rigour they deserve. Our
+            writers are experts and generalists, insiders and outsiders. What
+            they share is a commitment to getting things right and explaining
+            why they matter.
+          </p>
+
+          <h2>What we believe</h2>
+          <p>
+            Good journalism is not neutral. It takes facts seriously, follows
+            them wherever they lead, and is willing to reach conclusions. It is
+            fair to all sides without pretending that all sides are equal. It is
+            written for readers who want to understand the world, not just be
+            entertained by it.
+          </p>
+
+          <p>
+            We are editorially independent. No government, corporation, or
+            political party funds or influences our reporting. Our revenue comes
+            from subscriptions and a small number of carefully selected
+            advertising partners who have no influence over editorial decisions.
+          </p>
+
+          <h2>Our team</h2>
+          <p>
+            The Dispatch is built on a distributed model. Our editors are based
+            in London, New York, and Singapore. Our contributors write from more
+            than twenty countries. We believe that proximity to the story
+            matters — and that the best coverage of Southeast Asia doesn't come
+            from a bureau in Washington.
+          </p>
+
+          <h2>Our standards</h2>
+          <p>
+            We correct errors promptly and transparently. We name sources
+            whenever possible and explain when we cannot. We distinguish clearly
+            between news reporting and opinion. We do not publish stories we
+            cannot verify.
+          </p>
+
+          <p>
+            If you believe we have made an error, please contact us at <a
+              href="mailto:corrections@thedispatch.com"
+              >corrections@thedispatch.com</a
+            >. We take corrections seriously.
+          </p>
+        </div>
+
+        <div class="about-stats fade-up">
+          <div class="stat-item">
+            <div class="stat-number">40k+</div>
+            <div class="stat-label">Daily readers</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">20+</div>
+            <div class="stat-label">Countries covered</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">2022</div>
+            <div class="stat-label">Founded</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Independent</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .container-narrow {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .page-header {
+    padding: 64px 0 48px;
+  }
+  .page-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 20px;
+  }
+  .page-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+  .page-body {
+    padding: 48px 0 80px;
+  }
+  .lead {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: var(--text-2);
+    margin-bottom: 40px;
+    font-style: italic;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .prose {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--text);
+    margin-bottom: 60px;
+  }
+  .prose p {
+    margin-bottom: 1.5em;
+  }
+  .prose h2 {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 2em 0 0.7em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid var(--border-light);
+    letter-spacing: -0.01em;
+  }
+  .prose a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .prose a:hover {
+    border-bottom-color: var(--accent);
+  }
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border-light);
+  }
+  .stat-item {
+    background: var(--surface);
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .stat-number {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+  @media (max-width: 768px) {
+    .container-narrow {
+      padding: 0 20px;
+    }
+    .about-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

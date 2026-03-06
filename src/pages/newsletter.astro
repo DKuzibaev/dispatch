@@ -1,0 +1,315 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const newsletters = [
+  {
+    name: "The Dispatch Daily",
+    frequency: "Every weekday",
+    desc: "Our editors' picks — the five stories you need to read today. Concise, curated, essential. Delivered before 8 AM.",
+    subscribers: "40,000+",
+    accent: true,
+  },
+  {
+    name: "The Weekly Brief",
+    frequency: "Every Sunday",
+    desc: "A deeper look at the week's most important stories, with analysis and context you won't find in the daily news cycle.",
+    subscribers: "28,000+",
+    accent: false,
+  },
+  {
+    name: "Tech & Science",
+    frequency: "Twice a week",
+    desc: "The latest in technology, science, and innovation — explained clearly for curious non-specialists.",
+    subscribers: "18,000+",
+    accent: false,
+  },
+  {
+    name: "Business & Markets",
+    frequency: "Every weekday",
+    desc: "Market moves, economic data, and business analysis. What happened today and what it means for tomorrow.",
+    subscribers: "15,000+",
+    accent: false,
+  },
+];
+---
+
+<Layout
+  title="Newsletters — The Dispatch"
+  description="Subscribe to The Dispatch newsletters. Original reporting delivered to your inbox."
+>
+  <Header />
+  <main>
+    <div class="page-header">
+      <div class="container-narrow">
+        <div class="page-label fade-up">Newsletters</div>
+        <h1 class="page-title fade-up">
+          The news you need,<br />in your inbox.
+        </h1>
+        <p class="page-sub fade-up">
+          Independent reporting delivered directly to you. No algorithm. No
+          noise. Just good journalism.
+        </p>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="page-body">
+      <div class="container">
+        <div class="newsletters-grid">
+          {
+            newsletters.map((nl) => (
+              <div
+                class={`newsletter-card fade-up ${nl.accent ? "newsletter-card--featured" : ""}`}
+              >
+                {nl.accent && <div class="featured-bar" />}
+                <div class="nl-header">
+                  <h2 class="nl-name">{nl.name}</h2>
+                  <span class="nl-frequency">{nl.frequency}</span>
+                </div>
+                <p class="nl-desc">{nl.desc}</p>
+                <div class="nl-meta">
+                  <span class="nl-subscribers">
+                    {nl.subscribers} subscribers
+                  </span>
+                </div>
+                <form class="nl-form" onsubmit="handleSubmit(event, this)">
+                  <input
+                    type="email"
+                    class="nl-input"
+                    placeholder="your@email.com"
+                    required
+                  />
+                  <button type="submit" class="nl-btn">
+                    Subscribe
+                  </button>
+                </form>
+                <div class="nl-success" style="display:none;">
+                  <span class="success-check">✓</span> You're subscribed!
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="privacy-note fade-up">
+          <span class="privacy-icon">◆</span>
+          We never share your email address. You can unsubscribe from any newsletter
+          at any time with one click. Read our <a href="/privacy"
+            >Privacy Policy</a
+          >.
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script is:inline>
+  function handleSubmit(e, form) {
+    e.preventDefault();
+    form.style.display = "none";
+    form.nextElementSibling.style.display = "flex";
+  }
+</script>
+
+<style>
+  .container-narrow {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .page-header {
+    padding: 64px 0 48px;
+  }
+  .page-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 20px;
+  }
+  .page-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  .page-sub {
+    font-size: 1rem;
+    color: var(--text-2);
+    line-height: 1.6;
+    max-width: 560px;
+  }
+  .page-body {
+    padding: 48px 0 80px;
+  }
+
+  .newsletters-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border-light);
+    margin-bottom: 48px;
+  }
+
+  .newsletter-card {
+    background: var(--surface);
+    padding: 36px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .newsletter-card--featured {
+    background: var(--accent-bg);
+  }
+  .featured-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent);
+  }
+
+  .nl-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .nl-name {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .nl-frequency {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .nl-desc {
+    font-size: 0.9rem;
+    color: var(--text-2);
+    line-height: 1.65;
+    flex: 1;
+  }
+  .nl-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0.04em;
+  }
+  .nl-subscribers::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green, #4ade80);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .nl-form {
+    display: flex;
+    gap: 0;
+    margin-top: auto;
+  }
+  .nl-input {
+    flex: 1;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-right: none;
+    padding: 10px 14px;
+    font-family: var(--body);
+    font-size: 0.85rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .nl-input:focus {
+    border-color: var(--accent);
+  }
+  .nl-input::placeholder {
+    color: var(--text-3);
+  }
+  .nl-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .nl-btn:hover {
+    background: var(--accent-dark);
+  }
+  .nl-success {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    padding: 10px 0;
+  }
+  .success-check {
+    font-size: 16px;
+  }
+
+  .privacy-note {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+    line-height: 1.7;
+    text-align: center;
+    letter-spacing: 0.03em;
+  }
+  .privacy-note a {
+    color: var(--text-2);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+  .privacy-note a:hover {
+    color: var(--accent);
+  }
+  .privacy-icon {
+    color: var(--accent);
+    margin-right: 8px;
+    font-size: 9px;
+  }
+
+  @media (max-width: 768px) {
+    .container-narrow {
+      padding: 0 20px;
+    }
+    .newsletters-grid {
+      grid-template-columns: 1fr;
+    }
+    .nl-form {
+      flex-direction: column;
+    }
+    .nl-input {
+      border-right: 1px solid var(--border);
+    }
+  }
+</style>
