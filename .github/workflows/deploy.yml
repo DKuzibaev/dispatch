@@ -1,4 +1,4 @@
-name: Build and Deploy Astro in main
+name: Build and Deploy Astro to main
 
 on:
   push:
@@ -6,34 +6,43 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Клонируем репозиторий с сохранением токена для пуша
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: true  # чтобы push сработал
+          persist-credentials: true
 
+      # 2. Устанавливаем Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
+      # 3. Устанавливаем зависимости
       - name: Install dependencies
         run: npm ci
 
+      # 4. Синхронизируем контент Astro
       - name: Sync Astro content
         run: npx astro sync
 
+      # 5. Собираем сайт
       - name: Build Astro site
         run: npx astro build
 
+      # 6. Копируем файлы сборки в корень, не трогая .git и исходники
       - name: Copy dist files to root
         run: |
-          rm -rf ./public/* ./!(.git)
+          # удаляем старые файлы сборки (но не src, .git и конфиги)
+          find . -mindepth 1 -maxdepth 1 ! -name ".git" ! -name "src" ! -name "astro.config.mjs" ! -name "package.json" ! -name "package-lock.json" ! -name "node_modules" -exec rm -rf {} +
+          # копируем сборку
           cp -r dist/* .
-          
+
+      # 7. Коммитим и пушим обратно в main
       - name: Commit and Push
         run: |
           git config user.name "github-actions"
