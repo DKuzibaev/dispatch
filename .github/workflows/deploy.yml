@@ -1,4 +1,4 @@
-name: Build and Deploy Astro to main
+name: Build and Deploy Astro to GitHub Pages
 
 on:
   push:
@@ -10,11 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Клонируем репозиторий с сохранением токена для пуша
+      # 1. Клонируем репозиторий
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
 
       # 2. Устанавливаем Node.js
       - name: Setup Node.js
@@ -34,19 +32,11 @@ jobs:
       - name: Build Astro site
         run: npx astro build
 
-      # 6. Копируем файлы сборки в корень, не трогая .git и исходники
-      - name: Copy dist files to root
-        run: |
-          # удаляем старые файлы сборки (но не src, .git и конфиги)
-          find . -mindepth 1 -maxdepth 1 ! -name ".git" ! -name "src" ! -name "astro.config.mjs" ! -name "package.json" ! -name "package-lock.json" ! -name "node_modules" -exec rm -rf {} +
-          # копируем сборку
-          cp -r dist/* .
-
-      # 7. Коммитим и пушим обратно в main
-      - name: Commit and Push
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add .
-          git commit -m "Deploy built site" || echo "No changes to commit"
-          git push origin main
+      # 6. Публикуем в ветку gh-pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          # Для корректной работы base="/dispatch/"
+          publish_branch: gh-pages
