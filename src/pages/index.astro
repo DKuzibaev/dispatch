@@ -10,8 +10,8 @@ const allArticles = (await getCollection("articles")).sort(
 );
 
 const featured = allArticles.filter((a) => a.data.featured);
-const hero = featured[0];
-const secondFeatured = featured[1];
+const hero = featured[0] ?? allArticles[0];
+const secondFeatured = featured[1] ?? allArticles[1];
 const latest = allArticles.filter((a) => !a.data.featured).slice(0, 6);
 const opinionPieces = allArticles.filter((a) => a.data.category === "Opinion");
 const scienceArticles = allArticles.filter(
